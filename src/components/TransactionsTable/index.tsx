@@ -1,12 +1,24 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Container } from "./styles";
 import { api } from "../../services/api"
 
+interface Transaction{
+    id:number,
+    title:string,
+    amount: number,
+    type:string,
+    category:string,
+    createdAt:string;
+}
+
+
 export function TransactionTable(){
     
+    const [transactions, setTraansactions] = useState<Transaction[]>([])
+
     useEffect(() => {
        api.get('http://localhost:3000/api/transactions')
-        .then(response => console.log(response.data))
+        .then(response => setTraansactions(response.data.transactions))
     }, [])
     
     return (
@@ -22,18 +34,23 @@ export function TransactionTable(){
                 </thead>
 
                 <tbody>
-                    <tr>
-                        <td>Desenvolvimento de website</td>
-                        <td className="deposit">R$12.000,00</td>
-                        <td>Desenvolvimento</td>
-                        <td>27/12/2021</td>
-                    </tr>
-                    <tr>
-                        <td>Aluguel Kitnet</td>
-                        <td className="withdraw">- R$350,00</td>
-                        <td>Moradia</td>
-                        <td>15/12/2021</td>
-                    </tr>
+                   {transactions.map( transaction => (
+                        <tr key = {transaction.id}>
+                            <td>{transaction.title}</td>
+                            <td className={transaction.type}>
+                                {Intl.NumberFormat('pt-BR',{
+                                    style:'currency',
+                                    currency:'BRL'
+                                }).format(transaction.amount)}
+                            </td>
+                            <td>{transaction.category}</td>
+                            <td>
+                                {Intl.DateTimeFormat('pt-BR')
+                                    .format(new Date(transaction.createdAt))}
+                            </td>
+                        </tr>
+                    ))}
+                  
                 </tbody>
             </table>
         </Container>
