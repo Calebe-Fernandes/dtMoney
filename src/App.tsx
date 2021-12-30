@@ -4,6 +4,8 @@ import { GlobalStyle } from './styles/global';
 import {Header} from './components/Header/index';
 import {Dashboard} from './components/Dashboard/index'
 import {NewTransactionModal} from './components/NewTransactionModal/index'
+import {TransactionsContext} from './TransactionContext'
+
 Modal.setAppElement('#root');
 
 export function App() {
@@ -19,20 +21,20 @@ export function App() {
   }
 
   return (
-    <>
-      <Header
-        onOpenNewTransactionModal={handleOpenNewTransactionModal}
-      />
+    <TransactionsContext.Provider value={[]}>
+        <Header
+          onOpenNewTransactionModal={handleOpenNewTransactionModal}
+        />
 
-      <Dashboard/>
+        <Dashboard/>
 
-      <NewTransactionModal
-        isOpen ={isNewTransactionModalOpen}
-        onRequestClose={handleCloseNewTransactionModal}
-      />
+        <NewTransactionModal
+          isOpen ={isNewTransactionModalOpen}
+          onRequestClose={handleCloseNewTransactionModal}
+        />
 
-      <GlobalStyle/>
-    </>
+        <GlobalStyle/>
+    </TransactionsContext.Provider>
   );
 }
 
